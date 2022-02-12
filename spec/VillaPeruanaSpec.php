@@ -1,5 +1,10 @@
 <?php
 
+use App\Products\CoffeeProduct;
+use App\Products\NormalProduct;
+use App\Products\PiscoPerunoProduct;
+use App\Products\TicketVIPProduct;
+use App\Products\TumiProduct;
 use App\VillaPeruana;
 
 /*
@@ -11,9 +16,10 @@ describe('Villa Peruana', function () {
     describe('#tick', function () {
 
         context ('productos normales', function () {
+            $normalProduct = new NormalProduct();
 
-            it ('actualiza productos normales antes de la fecha de venta', function () {
-                $item = VillaPeruana::of('normal', 10, 5); // quality, sell in X days
+            it ('actualiza productos normales antes de la fecha de venta', function () use ($normalProduct) {
+                $item = VillaPeruana::of($normalProduct, 10, 5); // quality, sell in X days
 
                 $item->tick();
 
@@ -21,8 +27,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(4);
             });
 
-            it ('actualiza productos normales en la fecha de venta', function () {
-                $item = VillaPeruana::of('normal', 10, 0);
+            it ('actualiza productos normales en la fecha de venta', function () use ($normalProduct) {
+                $item = VillaPeruana::of($normalProduct, 10, 0);
 
                 $item->tick();
 
@@ -30,8 +36,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-1);
             });
 
-            it ('actualiza productos normales después de la fecha de venta', function () {
-                $item = VillaPeruana::of('normal', 10, -5);
+            it ('actualiza productos normales después de la fecha de venta', function () use ($normalProduct) {
+                $item = VillaPeruana::of($normalProduct, 10, -5);
 
                 $item->tick();
 
@@ -39,8 +45,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-6);
             });
 
-            it ('actualiza productos normales con calidad 0', function () {
-                $item = VillaPeruana::of('normal', 0, 5);
+            it ('actualiza productos normales con calidad 0', function () use ($normalProduct) {
+                $item = VillaPeruana::of($normalProduct, 0, 5);
 
                 $item->tick();
 
@@ -52,9 +58,10 @@ describe('Villa Peruana', function () {
 
 
         context('Pisco Peruano', function () {
+            $piscoPeruanoProduct = new PiscoPerunoProduct();
 
-            it ('actualiza Pisco Peruano antes de la fecha de venta', function () {
-                $item = VillaPeruana::of('Pisco Peruano', 10, 5);
+            it ('actualiza Pisco Peruano antes de la fecha de venta', function () use ($piscoPeruanoProduct) {
+                $item = VillaPeruana::of($piscoPeruanoProduct, 10, 5);
 
                 $item->tick();
 
@@ -62,8 +69,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(4);
             });
 
-            it ('actualiza Pisco Peruano antes de la fecha de venta con máxima calidad', function () {
-                $item = VillaPeruana::of('Pisco Peruano', 50, 5);
+            it ('actualiza Pisco Peruano antes de la fecha de venta con máxima calidad', function () use ($piscoPeruanoProduct) {
+                $item = VillaPeruana::of($piscoPeruanoProduct, 50, 5);
 
                 $item->tick();
 
@@ -71,8 +78,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(4);
             });
 
-            it ('actualiza Pisco Peruano en la fecha de venta', function () {
-                $item = VillaPeruana::of('Pisco Peruano', 10, 0);
+            it ('actualiza Pisco Peruano en la fecha de venta', function () use ($piscoPeruanoProduct) {
+                $item = VillaPeruana::of($piscoPeruanoProduct, 10, 0);
 
                 $item->tick();
 
@@ -80,8 +87,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-1);
             });
 
-            it ('actualiza Pisco Peruano en la fecha de venta, cerca a su máxima calidad', function () {
-                $item = VillaPeruana::of('Pisco Peruano', 49, 0);
+            it ('actualiza Pisco Peruano en la fecha de venta, cerca a su máxima calidad', function () use ($piscoPeruanoProduct) {
+                $item = VillaPeruana::of($piscoPeruanoProduct, 49, 0);
 
                 $item->tick();
 
@@ -89,8 +96,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-1);
             });
 
-            it ('actualiza Pisco Peruano en la fecha de venta con máxima calidad', function () {
-                $item = VillaPeruana::of('Pisco Peruano', 50, 0);
+            it ('actualiza Pisco Peruano en la fecha de venta con máxima calidad', function () use ($piscoPeruanoProduct) {
+                $item = VillaPeruana::of($piscoPeruanoProduct, 50, 0);
 
                 $item->tick();
 
@@ -98,8 +105,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-1);
             });
 
-            it ('actualiza Pisco Peruano después de la fecha de venta', function () {
-                $item = VillaPeruana::of('Pisco Peruano', 10, -10);
+            it ('actualiza Pisco Peruano después de la fecha de venta', function () use ($piscoPeruanoProduct) {
+                $item = VillaPeruana::of($piscoPeruanoProduct, 10, -10);
 
                 $item->tick();
 
@@ -107,8 +114,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-11);
             });
 
-            it ('actualiza Briem items después de la fecha de venta con máxima calidad', function () {
-                $item = VillaPeruana::of('Pisco Peruano', 50, -10);
+            it ('actualiza Briem items después de la fecha de venta con máxima calidad', function () use ($piscoPeruanoProduct) {
+                $item = VillaPeruana::of($piscoPeruanoProduct, 50, -10);
 
                 $item->tick();
 
@@ -120,18 +127,10 @@ describe('Villa Peruana', function () {
 
 
         context('Tumi', function () {
+            $tumiProduct = new TumiProduct();
 
-            it ('actualiza elementos Tumi antes de la fecha de venta', function () {
-                $item = VillaPeruana::of('Tumi de Oro Moche', 10, 5);
-
-                $item->tick();
-
-                expect($item->quality)->toBe(80);
-                expect($item->sellIn)->toBe(5);
-            });
-
-            it ('actualiza elementos Tumi en la fecha de venta', function () {
-                $item = VillaPeruana::of('Tumi de Oro Moche', 10, 5);
+            it ('actualiza elementos Tumi antes de la fecha de venta', function () use ($tumiProduct) {
+                $item = VillaPeruana::of($tumiProduct, 10, 5);
 
                 $item->tick();
 
@@ -139,8 +138,17 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(5);
             });
 
-            it ('actualiza elementos Tumi después de la fecha de venta', function () {
-                $item = VillaPeruana::of('Tumi de Oro Moche', 10, -1);
+            it ('actualiza elementos Tumi en la fecha de venta', function () use ($tumiProduct) {
+                $item = VillaPeruana::of($tumiProduct, 10, 5);
+
+                $item->tick();
+
+                expect($item->quality)->toBe(80);
+                expect($item->sellIn)->toBe(5);
+            });
+
+            it ('actualiza elementos Tumi después de la fecha de venta', function () use ($tumiProduct) {
+                $item = VillaPeruana::of($tumiProduct, 10, -1);
 
                 $item->tick();
 
@@ -158,8 +166,11 @@ describe('Villa Peruana', function () {
                 less and by 3 when there are 5 days or less but Quality drops to
                 0 after the concert
              */
-            it ('actualiza tickets VIP antes de la fecha del evento', function () {
-                $item = VillaPeruana::of('Ticket VIP al concierto de Pick Floid', 10, 11);
+
+            $ticketVIPProduct = new TicketVIPProduct();
+            
+            it ('actualiza tickets VIP antes de la fecha del evento', function () use ($ticketVIPProduct) {
+                $item = VillaPeruana::of($ticketVIPProduct, 10, 11);
 
                 $item->tick();
 
@@ -167,8 +178,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(10);
             });
 
-            it ('actualiza tickets VIP cerca a la fecha del evento', function () {
-                $item = VillaPeruana::of('Ticket VIP al concierto de Pick Floid', 10, 10);
+            it ('actualiza tickets VIP cerca a la fecha del evento', function () use ($ticketVIPProduct) {
+                $item = VillaPeruana::of($ticketVIPProduct, 10, 10);
 
                 $item->tick();
 
@@ -176,8 +187,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(9);
             });
 
-            it ('actualiza tickets VIP cerca a la fecha del evento, a la mayor calidad', function () {
-                $item = VillaPeruana::of('Ticket VIP al concierto de Pick Floid', 50, 10);
+            it ('actualiza tickets VIP cerca a la fecha del evento, a la mayor calidad', function () use ($ticketVIPProduct) {
+                $item = VillaPeruana::of($ticketVIPProduct, 50, 10);
 
                 $item->tick();
 
@@ -185,8 +196,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(9);
             });
 
-            it ('actualiza tickets VIP muy cerca a la fecha del evento', function () {
-                $item = VillaPeruana::of('Ticket VIP al concierto de Pick Floid', 10, 5);
+            it ('actualiza tickets VIP muy cerca a la fecha del evento', function () use ($ticketVIPProduct) {
+                $item = VillaPeruana::of($ticketVIPProduct, 10, 5);
 
                 $item->tick();
 
@@ -194,8 +205,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(4);
             });
 
-            it ('actualiza tickets VIP muy cerca a la fecha del evento, a máxima calidad', function () {
-                $item = VillaPeruana::of('Ticket VIP al concierto de Pick Floid', 50, 5);
+            it ('actualiza tickets VIP muy cerca a la fecha del evento, a máxima calidad', function () use ($ticketVIPProduct) {
+                $item = VillaPeruana::of($ticketVIPProduct, 50, 5);
 
                 $item->tick();
 
@@ -203,8 +214,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(4);
             });
 
-            it ('actualiza tickets VIP un día antes de la fecha del evento', function () {
-                $item = VillaPeruana::of('Ticket VIP al concierto de Pick Floid', 10, 1);
+            it ('actualiza tickets VIP un día antes de la fecha del evento', function () use ($ticketVIPProduct) {
+                $item = VillaPeruana::of($ticketVIPProduct, 10, 1);
 
                 $item->tick();
 
@@ -212,9 +223,9 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(0);
             });
 
-            it ('actualiza tickets VIP un día antes de la fecha del evento, a calidad máxima', function () {
+            it ('actualiza tickets VIP un día antes de la fecha del evento, a calidad máxima', function () use ($ticketVIPProduct) {
 
-                $item = VillaPeruana::of('Ticket VIP al concierto de Pick Floid', 50, 1);
+                $item = VillaPeruana::of($ticketVIPProduct, 50, 1);
 
                 $item->tick();
 
@@ -222,9 +233,9 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(0);
             });
 
-            it ('actualiza tickets VIP en la fecha del evento', function () {
+            it ('actualiza tickets VIP en la fecha del evento', function () use ($ticketVIPProduct) {
 
-                $item = VillaPeruana::of('Ticket VIP al concierto de Pick Floid', 10, 0);
+                $item = VillaPeruana::of($ticketVIPProduct, 10, 0);
 
                 $item->tick();
 
@@ -232,9 +243,9 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-1);
             });
 
-            it ('actualiza tickets VIP después de la fecha del evento', function () {
+            it ('actualiza tickets VIP después de la fecha del evento', function () use ($ticketVIPProduct) {
 
-                $item = VillaPeruana::of('Ticket VIP al concierto de Pick Floid', 10, -1);
+                $item = VillaPeruana::of($ticketVIPProduct, 10, -1);
 
                 $item->tick();
 
@@ -246,9 +257,10 @@ describe('Villa Peruana', function () {
 
 
         context ("Producto de Café", function () {
+            $coffeeProduct = new CoffeeProduct();
 
-            it ('actualiza Producto de Café antes de la fecha de venta', function () {
-                $item = VillaPeruana::of('Café Altocusco', 10, 10);
+            it ('actualiza Producto de Café antes de la fecha de venta', function () use ($coffeeProduct) {
+                $item = VillaPeruana::of( $coffeeProduct, 10, 10);
 
                 $item->tick();
 
@@ -256,8 +268,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(9);
             });
 
-            it ('actualiza Producto de Café con cualidad 0', function () {
-                $item = VillaPeruana::of('Café Altocusco', 0, 10);
+            it ('actualiza Producto de Café con cualidad 0', function () use ($coffeeProduct) {
+                $item = VillaPeruana::of( $coffeeProduct, 0, 10);
 
                 $item->tick();
 
@@ -265,8 +277,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(9);
             });
 
-            it ('actualiza Producto de Café en la fecha de venta', function () {
-                $item = VillaPeruana::of('Café Altocusco', 10, 0);
+            it ('actualiza Producto de Café en la fecha de venta', function () use ($coffeeProduct) {
+                $item = VillaPeruana::of( $coffeeProduct, 10, 0);
 
                 $item->tick();
 
@@ -274,8 +286,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-1);
             });
 
-            it ('actualiza Producto de Café en la fecha de venta con calidad 0', function () {
-                $item = VillaPeruana::of('Café Altocusco', 0, 0);
+            it ('actualiza Producto de Café en la fecha de venta con calidad 0', function () use ($coffeeProduct) {
+                $item = VillaPeruana::of( $coffeeProduct, 0, 0);
 
                 $item->tick();
 
@@ -283,8 +295,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-1);
             });
 
-            it ('actualiza Producto de Café después de la fecha de venta', function () {
-                $item = VillaPeruana::of('Café Altocusco', 10, -10);
+            it ('actualiza Producto de Café después de la fecha de venta', function () use ($coffeeProduct) {
+                $item = VillaPeruana::of( $coffeeProduct, 10, -10);
 
                 $item->tick();
 
@@ -292,8 +304,8 @@ describe('Villa Peruana', function () {
                 expect($item->sellIn)->toBe(-11);
             });
 
-            it ('actualiza Producto de Café después de la fecha de venta con calidad 0', function () {
-                $item = VillaPeruana::of('Café Altocusco', 0, -10);
+            it ('actualiza Producto de Café después de la fecha de venta con calidad 0', function () use ($coffeeProduct) {
+                $item = VillaPeruana::of( $coffeeProduct, 0, -10);
 
                 $item->tick();
 
