@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Interfaces\TypeProductInterface;
-use App\TipoProducto;
 
 class VillaPeruana
 {
