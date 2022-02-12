@@ -58,7 +58,7 @@ describe('Villa Peruana', function () {
 
                 $item->tick();
 
-                expect($item->quality)->toBe(11);
+                expect($item->quality)->toBe(13);
                 expect($item->sellIn)->toBe(4);
             });
 
@@ -76,7 +76,7 @@ describe('Villa Peruana', function () {
 
                 $item->tick();
 
-                expect($item->quality)->toBe(12);
+                expect($item->quality)->toBe(0);
                 expect($item->sellIn)->toBe(-1);
             });
 
@@ -85,7 +85,7 @@ describe('Villa Peruana', function () {
 
                 $item->tick();
 
-                expect($item->quality)->toBe(50);
+                expect($item->quality)->toBe(0);
                 expect($item->sellIn)->toBe(-1);
             });
 
@@ -94,7 +94,7 @@ describe('Villa Peruana', function () {
 
                 $item->tick();
 
-                expect($item->quality)->toBe(50);
+                expect($item->quality)->toBe(0);
                 expect($item->sellIn)->toBe(-1);
             });
 
@@ -103,11 +103,11 @@ describe('Villa Peruana', function () {
 
                 $item->tick();
 
-                expect($item->quality)->toBe(12);
+                expect($item->quality)->toBe(11);
                 expect($item->sellIn)->toBe(-11);
             });
 
-             it ('actualiza Briem items después de la fecha de venta con máxima calidad', function () {
+            it ('actualiza Briem items después de la fecha de venta con máxima calidad', function () {
                 $item = VillaPeruana::of('Pisco Peruano', 50, -10);
 
                 $item->tick();
@@ -126,7 +126,7 @@ describe('Villa Peruana', function () {
 
                 $item->tick();
 
-                expect($item->quality)->toBe(10);
+                expect($item->quality)->toBe(80);
                 expect($item->sellIn)->toBe(5);
             });
 
@@ -135,7 +135,7 @@ describe('Villa Peruana', function () {
 
                 $item->tick();
 
-                expect($item->quality)->toBe(10);
+                expect($item->quality)->toBe(80);
                 expect($item->sellIn)->toBe(5);
             });
 
@@ -144,7 +144,7 @@ describe('Villa Peruana', function () {
 
                 $item->tick();
 
-                expect($item->quality)->toBe(10);
+                expect($item->quality)->toBe(80);
                 expect($item->sellIn)->toBe(-1);
             });
 

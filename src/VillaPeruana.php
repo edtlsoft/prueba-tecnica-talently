@@ -9,6 +9,12 @@ class VillaPeruana
     public $quality;
 
     public $sellIn;
+    
+    private $ticketNameVIP = 'Ticket VIP al concierto de Pick Floid';
+    
+    private $tumiName = 'Tumi de Oro Moche';
+    
+    private $piscoPeruano = 'Pisco Peruano'; 
 
     public function __construct($name, $quality, $sellIn)
     {
@@ -23,51 +29,75 @@ class VillaPeruana
 
     public function tick()
     {
-        if ($this->name != 'Pisco Peruano' and $this->name != 'Ticket VIP al concierto de Pick Floid') {
-            if ($this->quality > 0) {
-                if ($this->name != 'Tumi de Oro Moche') {
-                    $this->quality = $this->quality - 1;
-                }
-            }
-        } else {
-            if ($this->quality < 50) {
-                $this->quality = $this->quality + 1;
-
-                if ($this->name == 'Ticket VIP al concierto de Pick Floid') {
-                    if ($this->sellIn < 11) {
-                        if ($this->quality < 50) {
-                            $this->quality = $this->quality + 1;
-                        }
-                    }
-                    if ($this->sellIn < 6) {
-                        if ($this->quality < 50) {
-                            $this->quality = $this->quality + 1;
-                        }
-                    }
-                }
-            }
+        if ($this->sellIn > 0) {
+            $this->updateQuality(-1);
+        }
+        else {
+            $this->updateQuality(-2);
         }
 
-        if ($this->name != 'Tumi de Oro Moche') {
-            $this->sellIn = $this->sellIn - 1;
+        $this->updateSellIn(1);
+    }
+
+    private function updateSellIn($quantity) {
+        $this->sellIn -= $this->name === $this->tumiName ? 0 : $quantity;
+    }
+
+    private function updateQuality($quantity) {
+        $quantity   = $this->calculateQuantityQualityForTypeOfProduct($quantity);
+        $newQuality = $this->quality + $quantity;
+
+        if ($newQuality > 50 && $this->name != $this->tumiName) {
+            $newQuality = 50;
+        }
+        else if ($newQuality < 0) {
+            $newQuality = 0;
+        }
+        
+        $this->quality = $newQuality;
+    }
+
+    private function calculateQuantityQualityForTypeOfProduct($quantity)
+    {
+        if ($this->name === $this->piscoPeruano) {
+            $quantity = $this->calculateQuantityQualityForPiscoPeruano();
+        }
+        else if ($this->name === $this->tumiName) {
+            $quantity = $this->calculateQuantityQualityForTumi();
+        }
+        else if ($this->name === $this->ticketNameVIP) {
+            $quantity = $this->calculateQuantityQualityForTicketVIP();
         }
 
-        if ($this->sellIn < 0) {
-            if ($this->name != 'Pisco Peruano') {
-                if ($this->name != 'Ticket VIP al concierto de Pick Floid') {
-                    if ($this->quality > 0) {
-                        if ($this->name != 'Tumi de Oro Moche') {
-                            $this->quality = $this->quality - 1;
-                        }
-                    }
-                } else {
-                    $this->quality = $this->quality - $this->quality;
-                }
-            } else {
-                if ($this->quality < 50) {
-                    $this->quality = $this->quality + 1;
-                }
-            }
+        return $quantity;
+    }
+
+    private function calculateQuantityQualityForPiscoPeruano() {
+        return $this->calculateQuantityQualityForPiscoPeruanoOrTicketVIP();
+    }
+
+    private function calculateQuantityQualityForTumi() {
+        $this->quality = 80;
+        return 0;
+    }
+
+    private function calculateQuantityQualityForTicketVIP() {
+        return $this->sellIn < 0 ? -$this->quality : $this->calculateQuantityQualityForPiscoPeruanoOrTicketVIP();
+    }
+
+    private function calculateQuantityQualityForPiscoPeruanoOrTicketVIP() {
+        $quantity = 1;
+
+        if ($this->sellIn > 0 && $this->sellIn <= 5) {
+            $quantity = 3;
         }
+        else if ($this->sellIn > 5 && $this->sellIn <= 10) {
+            $quantity = 2;
+        }
+        else if ($this->sellIn === 0 ) {
+            $quantity = -$this->quality;
+        }
+
+        return $quantity;
     }
 }
