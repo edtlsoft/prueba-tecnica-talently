@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\TipoProducto;
+
 class VillaPeruana
 {
     public $name;
@@ -9,18 +11,15 @@ class VillaPeruana
     public $quality;
 
     public $sellIn;
-    
-    private $ticketNameVIP = 'Ticket VIP al concierto de Pick Floid';
-    
-    private $tumiName = 'Tumi de Oro Moche';
-    
-    private $piscoPeruano = 'Pisco Peruano'; 
+
+    private $tipoProducto;
 
     public function __construct($name, $quality, $sellIn)
     {
         $this->name = $name;
         $this->quality = $quality;
         $this->sellIn = $sellIn;
+        $this->tipoProducto = new TipoProducto($this->name);
     }
 
     public static function of($name, $quality, $sellIn) {
@@ -29,75 +28,8 @@ class VillaPeruana
 
     public function tick()
     {
-        if ($this->sellIn > 0) {
-            $this->updateQuality(-1);
-        }
-        else {
-            $this->updateQuality(-2);
-        }
-
-        $this->updateSellIn(1);
-    }
-
-    private function updateSellIn($quantity) {
-        $this->sellIn -= $this->name === $this->tumiName ? 0 : $quantity;
-    }
-
-    private function updateQuality($quantity) {
-        $quantity   = $this->calculateQuantityQualityForTypeOfProduct($quantity);
-        $newQuality = $this->quality + $quantity;
-
-        if ($newQuality > 50 && $this->name != $this->tumiName) {
-            $newQuality = 50;
-        }
-        else if ($newQuality < 0) {
-            $newQuality = 0;
-        }
-        
-        $this->quality = $newQuality;
-    }
-
-    private function calculateQuantityQualityForTypeOfProduct($quantity)
-    {
-        if ($this->name === $this->piscoPeruano) {
-            $quantity = $this->calculateQuantityQualityForPiscoPeruano();
-        }
-        else if ($this->name === $this->tumiName) {
-            $quantity = $this->calculateQuantityQualityForTumi();
-        }
-        else if ($this->name === $this->ticketNameVIP) {
-            $quantity = $this->calculateQuantityQualityForTicketVIP();
-        }
-
-        return $quantity;
-    }
-
-    private function calculateQuantityQualityForPiscoPeruano() {
-        return $this->calculateQuantityQualityForPiscoPeruanoOrTicketVIP();
-    }
-
-    private function calculateQuantityQualityForTumi() {
-        $this->quality = 80;
-        return 0;
-    }
-
-    private function calculateQuantityQualityForTicketVIP() {
-        return $this->sellIn < 0 ? -$this->quality : $this->calculateQuantityQualityForPiscoPeruanoOrTicketVIP();
-    }
-
-    private function calculateQuantityQualityForPiscoPeruanoOrTicketVIP() {
-        $quantity = 1;
-
-        if ($this->sellIn > 0 && $this->sellIn <= 5) {
-            $quantity = 3;
-        }
-        else if ($this->sellIn > 5 && $this->sellIn <= 10) {
-            $quantity = 2;
-        }
-        else if ($this->sellIn === 0 ) {
-            $quantity = -$this->quality;
-        }
-
-        return $quantity;
+        $quantiyQualityToDecrease = $this->sellIn > 0 ? -1 : -2;
+        $this->quality = $this->tipoProducto->calculateNewQuality($this->quality, $quantiyQualityToDecrease, $this->sellIn);
+        $this->sellIn  = $this->tipoProducto->calculateNewSellIn($this->sellIn, 1);
     }
 }
